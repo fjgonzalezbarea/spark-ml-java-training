@@ -3,7 +3,7 @@ Spark ML training from Data Bricks, solved in Java language.
 
 Taking as reference the Spark Summit 2014 : https://databricks-training.s3.amazonaws.com/index.html This project is oriented to solve the Machine Learning training course in Java language (the course was oriented to Python and Scala).
 
-You will find the initial squeleton code to start working with and a possible final solution. 
+You will find the base code to start working with and a final solution. 
 
 To follow the course, try this link: https://databricks-training.s3.amazonaws.com/movie-recommendation-with-mllib.html.
 
