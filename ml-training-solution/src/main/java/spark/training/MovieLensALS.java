@@ -45,7 +45,7 @@ public class MovieLensALS {
 
         // 3. Load Personal Ratings
         // 3.1 Create ML Service instance
-        JavaRDD<Rating> myRatings = service.loadMyRatings(args[1]);
+        JavaRDD<Rating> myRatings = service.loadDatasetFromFile("personalRatings.txt", fileLineToRating);
 
         // 4. Load Ratings
         JavaRDD<Rating> ratings = service.loadDatasetFromFile("ratings.dat", fileLineToRating);
@@ -77,14 +77,13 @@ public class MovieLensALS {
         Dataset<Row> predictions = bestModel.transform(service.transform(candidates, Rating.class));
 
         System.out.println("Movies recommended for you:");
-        Movie[] recommendations = predictions
-                .limit(50)
+        Movie[] recommendations = (Movie[])predictions
                 .map(new MapFunction<Row, Movie>() {
                     @Override
                     public Movie call(Row row) throws Exception {
                         return Movie.transform(row);
                     }
-                }, Movie.movieEncoder).collect();
+                }, Movie.movieEncoder).take(50);
 
         IntStream.range(0, 49)
                 .forEach(index -> System.out.println(index + ": " + recommendations[index].getMovieName()));

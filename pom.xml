@@ -16,6 +16,8 @@
     <properties>
         <spark.core.version>2.1.0</spark.core.version>
         <spark.ml.version>2.1.0</spark.ml.version>
+        <java.version>1.8</java.version>
+        <plugin.maven-compiler.version>3.3</plugin.maven-compiler.version>
     </properties>
 
     <dependencyManagement>
@@ -32,6 +34,23 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${plugin.maven-compiler.version}</version>
+                    <configuration>
+                        <compilerVersion>${java.version}</compilerVersion>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 	
 	<modules>
 		<module>ml-training-base</module>

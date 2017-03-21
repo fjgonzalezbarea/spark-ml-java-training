@@ -68,4 +68,29 @@ public class Rating implements Serializable {
             return Rating.parseRating(line);
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Rating rating1 = (Rating) o;
+
+        if (userId != null ? !userId.equals(rating1.userId) : rating1.userId != null) return false;
+        if (movieId != null ? !movieId.equals(rating1.movieId) : rating1.movieId != null) return false;
+        if (rating != null ? !rating.equals(rating1.rating) : rating1.rating != null) return false;
+        if (timeStamp != null ? !timeStamp.equals(rating1.timeStamp) : rating1.timeStamp != null) return false;
+        return ratingEncoder != null ? ratingEncoder.equals(rating1.ratingEncoder) : rating1.ratingEncoder == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId != null ? userId.hashCode() : 0;
+        result = 31 * result + (movieId != null ? movieId.hashCode() : 0);
+        result = 31 * result + (rating != null ? rating.hashCode() : 0);
+        result = 31 * result + (timeStamp != null ? timeStamp.hashCode() : 0);
+        result = 31 * result + (ratingEncoder != null ? ratingEncoder.hashCode() : 0);
+        return result;
+    }
 }

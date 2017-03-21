@@ -33,10 +33,6 @@ public class ApplicationService {
         sc.stop();
     }
 
-    public <T> JavaRDD<T> loadMyRatings(String path) {
-        return sc.parallelize(Collections.<T>emptyList());
-    }
-
     public <T> JavaRDD<T> loadDatasetFromFile(String fileName, Function<String, T> parseFunction) {
         return spark.read().textFile(new File(homeDirectory, fileName).toString())
                 .javaRDD()

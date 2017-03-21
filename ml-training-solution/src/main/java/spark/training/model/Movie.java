@@ -16,6 +16,8 @@ public class Movie {
 
     public static final Encoder<Movie> movieEncoder = Encoders.bean(Movie.class);
 
+    public static final Function<String, Movie> fileLineToMovie = (Function<String, Movie>) line -> Movie.parseMovie(line);
+
     public Movie(Integer movieId, String movieName) {
         this.movieId = movieId;
         this.movieName = movieName;
@@ -43,10 +45,22 @@ public class Movie {
         return new Movie(row.getInt(0), row.getString(1));
     }
 
-    public static final Function<String, Movie> fileLineToMovie = new Function<String, Movie>() {
-        @Override
-        public Movie call(String line) throws Exception {
-            return Movie.parseMovie(line);
-        }
-    };
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Movie movie = (Movie) o;
+
+        if (movieId != null ? !movieId.equals(movie.movieId) : movie.movieId != null) return false;
+        return movieName != null ? movieName.equals(movie.movieName) : movie.movieName == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = movieId != null ? movieId.hashCode() : 0;
+        result = 31 * result + (movieName != null ? movieName.hashCode() : 0);
+        return result;
+    }
 }
