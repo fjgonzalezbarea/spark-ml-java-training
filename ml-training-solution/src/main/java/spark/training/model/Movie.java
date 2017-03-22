@@ -5,16 +5,16 @@ import org.apache.spark.sql.Encoder;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 
+import java.io.Serializable;
+
 /**
  * @author <a href="mailto:francisco.j.gonzalez.barea@gmail.com">Francisco Gonzalez</a>
  */
-public class Movie {
+public class Movie implements Serializable {
 
     private final Integer movieId;
 
     private final String movieName;
-
-    public static final Encoder<Movie> movieEncoder = Encoders.bean(Movie.class);
 
     public static final Function<String, Movie> fileLineToMovie = (Function<String, Movie>) line -> Movie.parseMovie(line);
 

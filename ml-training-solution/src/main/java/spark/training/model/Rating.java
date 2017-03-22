@@ -12,6 +12,11 @@ import java.io.Serializable;
  */
 public class Rating implements Serializable {
 
+    public static final Integer USERID_ROW_INDEX = 3;
+    public static final Integer MOVIEID_ROW_INDEX = 0;
+    public static final Integer RATING_ROW_INDEX = 1;
+    public static final Integer TIMESTAMP_ROW_INDEX = 2;
+
     private Integer userId;
 
     private Integer movieId;
@@ -20,8 +25,7 @@ public class Rating implements Serializable {
 
     private Long timeStamp;
 
-    // Encoders are created for Java beans
-    public final Encoder<Rating> ratingEncoder = Encoders.bean(Rating.class);
+    public static final Function<String, Rating> fileLineToRating = (Function<String, Rating>) line -> Rating.parseRating(line);
 
     public Rating(Integer userId, Integer movieId, Double rating, Long timeStamp) {
         this.userId = userId;
@@ -62,13 +66,6 @@ public class Rating implements Serializable {
         return new Rating(row.getInt(0), row.getInt(1), row.getDouble(2), row.getLong(3));
     }
 
-    public static final Function<String, Rating> fileLineToRating = new Function<String, Rating>() {
-        @Override
-        public Rating call(String line) throws Exception {
-            return Rating.parseRating(line);
-        }
-    };
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -79,8 +76,7 @@ public class Rating implements Serializable {
         if (userId != null ? !userId.equals(rating1.userId) : rating1.userId != null) return false;
         if (movieId != null ? !movieId.equals(rating1.movieId) : rating1.movieId != null) return false;
         if (rating != null ? !rating.equals(rating1.rating) : rating1.rating != null) return false;
-        if (timeStamp != null ? !timeStamp.equals(rating1.timeStamp) : rating1.timeStamp != null) return false;
-        return ratingEncoder != null ? ratingEncoder.equals(rating1.ratingEncoder) : rating1.ratingEncoder == null;
+        return timeStamp != null ? timeStamp.equals(rating1.timeStamp) : rating1.timeStamp == null;
 
     }
 
@@ -90,7 +86,6 @@ public class Rating implements Serializable {
         result = 31 * result + (movieId != null ? movieId.hashCode() : 0);
         result = 31 * result + (rating != null ? rating.hashCode() : 0);
         result = 31 * result + (timeStamp != null ? timeStamp.hashCode() : 0);
-        result = 31 * result + (ratingEncoder != null ? ratingEncoder.hashCode() : 0);
         return result;
     }
 }

@@ -5,6 +5,8 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.ml.recommendation.ALSModel;
 import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Encoder;
+import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import static spark.training.model.Movie.fileLineToMovie;
+import static spark.training.model.Rating.USERID_ROW_INDEX;
 import static spark.training.model.Rating.fileLineToRating;
 import static spark.training.utils.ALSModelUtils.chooseBestALSModel;
 import static spark.training.utils.ALSModelUtils.createALSModelsList;
@@ -40,6 +43,7 @@ public class MovieLensALS {
         // 2. Setup Spark environment
         Map<String, String> configValues = ImmutableMap.<String, String>builder()
                 .put("spark.executor.memory", "2g")
+                .put("spark.network.timeout", "800")
                 .build();
         ApplicationService service = new ApplicationService("MovieLensALS", args[0], configValues);
 
@@ -56,11 +60,15 @@ public class MovieLensALS {
         // 6. TRAIN ML MODEL
         // 6.1 Splitting training data
         int numPartitions = 4;
+        // IMPORTANT: Dataset<Row> are mapped based on class attrs, in alphabetical order
         Dataset<Row> ratingsDataset = service.transform(ratings, Rating.class);
         Dataset<Row> myRatingsDataset = service.transform(myRatings, Rating.class);
-        Dataset<Row> training = buildDataPartition(ratingsDataset, myRatingsDataset, buildFilterFunctionLowerThan(1, 6), numPartitions).cache();
-        Dataset<Row> validation = buildDataPartition(ratingsDataset, buildFilterFunctionRange(1, 6, 8), numPartitions).cache();
-        Dataset<Row> test = buildDataPartition(ratingsDataset, buildFilterFunctionHigherOrEqualThan(1, 8)).cache();
+        Dataset<Row> training = buildDataPartition(ratingsDataset, myRatingsDataset, buildFilterFunctionLowerThan(USERID_ROW_INDEX, 6),
+                numPartitions).cache();
+        Dataset<Row> validation = buildDataPartition(ratingsDataset, buildFilterFunctionRange(USERID_ROW_INDEX, 6, 8),
+                numPartitions).cache();
+        Dataset<Row> test = buildDataPartition(ratingsDataset, buildFilterFunctionHigherOrEqualThan(USERID_ROW_INDEX, 8))
+                .cache();
 
         // You should see 'Training: 602251, validation: 198919, test: 199049.'
         LOGGER.info("Training: {}, validation: {}, test: {}", training.count(), validation.count(), test.count());
@@ -77,13 +85,14 @@ public class MovieLensALS {
         Dataset<Row> predictions = bestModel.transform(service.transform(candidates, Rating.class));
 
         System.out.println("Movies recommended for you:");
-        Movie[] recommendations = (Movie[])predictions
+        Encoder<Movie> movieEncoder = Encoders.bean(Movie.class);
+        Movie[] recommendations = (Movie[]) predictions
                 .map(new MapFunction<Row, Movie>() {
                     @Override
                     public Movie call(Row row) throws Exception {
                         return Movie.transform(row);
                     }
-                }, Movie.movieEncoder).take(50);
+                }, movieEncoder).take(50);
 
         IntStream.range(0, 49)
                 .forEach(index -> System.out.println(index + ": " + recommendations[index].getMovieName()));
