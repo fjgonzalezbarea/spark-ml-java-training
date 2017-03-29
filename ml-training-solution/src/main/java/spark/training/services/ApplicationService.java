@@ -1,5 +1,6 @@
 package spark.training.services;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -9,7 +10,6 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -23,6 +23,15 @@ public class ApplicationService {
 
     public ApplicationService(String appName, String homeDirectory, Map<String, String> configProperties) {
         this.sc = setUpEnvironment(appName, configProperties);
+        this.spark = buildSession(sc);
+        this.homeDirectory = homeDirectory;
+    }
+
+    public ApplicationService(String appName, String homeDirectory) {
+        Map<String, String> configValues = ImmutableMap.<String, String>builder()
+                .put("spark.executor.memory", "4g")
+                .build();
+        this.sc = setUpEnvironment(appName, configValues);
         this.spark = buildSession(sc);
         this.homeDirectory = homeDirectory;
     }

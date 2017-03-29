@@ -1,8 +1,6 @@
 package spark.training.model;
 
 import org.apache.spark.api.java.function.Function;
-import org.apache.spark.sql.Encoder;
-import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 
 import java.io.Serializable;
@@ -12,11 +10,18 @@ import java.io.Serializable;
  */
 public class Movie implements Serializable {
 
-    private final Integer movieId;
+    public static final Integer MOVIE_MOVIEID_ROW_INDEX = 0;
+    public static final Integer MOVIE_MOVIENAME_ROW_INDEX = 1;
 
-    private final String movieName;
+    private Integer movieId;
+
+    private String movieName;
 
     public static final Function<String, Movie> fileLineToMovie = (Function<String, Movie>) line -> Movie.parseMovie(line);
+
+    // Needed for Spark Encoders
+    public Movie() {
+    }
 
     public Movie(Integer movieId, String movieName) {
         this.movieId = movieId;
@@ -31,10 +36,18 @@ public class Movie implements Serializable {
         return movieName;
     }
 
+    public void setMovieId(Integer movieId) {
+        this.movieId = movieId;
+    }
+
+    public void setMovieName(String movieName) {
+        this.movieName = movieName;
+    }
+
     public static Movie parseMovie(String line) {
         String[] fields = line.split("::");
-        if (fields.length != 2) {
-            throw new IllegalArgumentException("Each line must contain 4 fields");
+        if (fields.length != 3) {
+            throw new IllegalArgumentException("Each line must contain 3 fields");
         }
         int movieId = Integer.parseInt(fields[0]);
         String movieName = fields[1];
