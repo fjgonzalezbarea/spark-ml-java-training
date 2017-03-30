@@ -34,9 +34,15 @@ You will need the following tools/frameworks to get started with this course:
 
 <code>
 # Log training app at DEBUG level and into file
+</code>
+<code>
 log4j.logger.spark.training=DEBUG, training
+</code>
 
+<code>
 # File configuration
+</code>
+<code>
 log4j.appender.training=org.apache.log4j.RollingFileAppender
 log4j.appender.training.File=logs/trainings.log
 log4j.appender.training.layout=org.apache.log4j.PatternLayout
