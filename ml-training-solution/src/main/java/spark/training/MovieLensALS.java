@@ -46,8 +46,8 @@ public class MovieLensALS {
 
     private static void validateAppArguments(String[] args) {
         if (args.length != 2) {
-            LOGGER.error("Usage: [spark root directory]/bin/spark-submit --driver-memory 2g --class MovieLensALS " +
-                    "target/scala-*/movielens-als-ssembly-*.jar movieLensHomeDir personalRatingsFile");
+            LOGGER.error("Usage: [spark root directory]/bin/spark-submit.cmd --driver-memory 2g --class spark.training.MovieLensALS " +
+                    "target\\ml-training-solution-1.0-SNAPSHOT-jar-with-dependencies.jar movieLensHomeDir personalRatingsFile");
             System.exit(1);
         }
     }
