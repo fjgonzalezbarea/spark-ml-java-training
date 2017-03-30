@@ -44,8 +44,14 @@ log4j.logger.spark.training=DEBUG, training
 </code>
 <code>
 log4j.appender.training=org.apache.log4j.RollingFileAppender
+</code>
+<code>
 log4j.appender.training.File=logs/trainings.log
+</code>
+<code>
 log4j.appender.training.layout=org.apache.log4j.PatternLayout
+</code>
+<code>
 log4j.appender.training.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n
 </code>
 
