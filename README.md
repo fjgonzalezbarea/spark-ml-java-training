@@ -32,35 +32,29 @@ You will need the following tools/frameworks to get started with this course:
 2. Edit log4j.properties.template
 3. Add the following lines at the end of the file
 
-<code>
-# Log training app at DEBUG level and into file
-</code>
-<code>
-log4j.logger.spark.training=DEBUG, training
-</code>
+<code># Log training app at DEBUG level and into file</code>
 
-<code>
-# File configuration
-</code>
-<code>
-log4j.appender.training=org.apache.log4j.RollingFileAppender
-</code>
-<code>
-log4j.appender.training.File=logs/trainings.log
-</code>
-<code>
-log4j.appender.training.layout=org.apache.log4j.PatternLayout
-</code>
-<code>
-log4j.appender.training.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n
-</code>
+<code>log4j.logger.spark.training=DEBUG, training</code>
+
+
+<code># File configuration</code>
+
+<code>log4j.appender.training=org.apache.log4j.RollingFileAppender</code>
+
+<code>log4j.appender.training.File=logs/trainings.log</code>
+
+<code>log4j.appender.training.layout=org.apache.log4j.PatternLayout</code>
+
+<code>log4j.appender.training.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n</code>
+
 
 4. Save it as log4j.properties
 
 * Submit the application to Spark:
 
-<code>
-[spark root directory]/bin/spark-submit.cmd --driver-memory 2g --master local[4] --class spark.training.MovieLensALS target\ml-training-solution-1.0-SNAPSHOT-jar-with-dependencies.jar [movieLensFilesHomeDir] [personalRatingsFile]
-</code>
+<code>[spark root directory]/bin/spark-submit.cmd --driver-memory 2g --master local[4] --class spark.training.MovieLensALS target\ml-training-solution-1.0-SNAPSHOT-jar-with-dependencies.jar [movieLensFilesHomeDir] [personalRatingsFile]</code>
+
+
 
 * You will find you´re 50 recommendations in the logs/output.log file
+
